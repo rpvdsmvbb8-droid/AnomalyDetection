@@ -48,7 +48,7 @@ def main():
          for filename in filenames:
              data_files.append(os.path.join(dirname, filename))
 
-    df = reduce_mem_usage(pd.read_csv(data_files[3],low_memory=False,index_col=False,usecols=[i for i in range(4,84)]))
+    df = reduce_mem_usage(pd.read_csv(data_files[3],low_memory=False,index_col=False,usecols=[i for i in range(4,74)]))
     print(df.dtypes)
     dtypes = df.dtypes.to_dict()
     columns = df.columns.tolist()
@@ -60,7 +60,7 @@ def main():
         elif filename=="data/02-16-2018.csv" or filename=="data/02-28-2018.csv" or filename=="data/03-01-2018.csv":
             print(f"======={filename}======",flush=True)
             print(f"file size: {os.path.getsize(filename) / (1024**2)} MB",flush=True)
-            df = pd.concat([df, reduce_mem_usage(pd.read_csv(filename, low_memory=False, index_col=False,names=columns))],ignore_index=True)
+            df = pd.concat([df, reduce_mem_usage(pd.read_csv(filename, low_memory=False, index_col=False,names=columns[:70]))],ignore_index=True)
             print(f"Concatenated dataFrame mem usage: {df.memory_usage().sum()/1024**2} MB",flush=True)
             print("free -mh output is : ",flush=True)
             os.system("free -mh")
@@ -68,7 +68,7 @@ def main():
             print(f"======={filename}======",flush=True)
             print(f"file size: {os.path.getsize(filename) / (1024**2)} MB",flush=True)
             df = pd.concat([df, reduce_mem_usage(pd.read_csv(
-                filename, low_memory=False, index_col=False,dtype=dtypes))],ignore_index=True)
+                filename, low_memory=False, index_col=False,dtype={k: v for k, v in dtypes.items() if k in df.columns}))],ignore_index=True)
             print(f"Concatenated dataFrame mem usage: {df.memory_usage().sum()/1024**2} MB",flush=True)
             print("free -mh output is : ",flush=True)
             os.system("free -mh")
